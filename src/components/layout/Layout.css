@@ -1,0 +1,26 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  margin-left: 240px;
+  margin-top: 70px;
+  padding: 30px 40px;
+  flex: 1;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 70px);
+  transition: all 0.3s ease;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 60px;
+    margin-bottom: 65px;
+    padding: 20px 15px;
+    min-height: calc(100vh - 60px - 65px);
+  }
+}
