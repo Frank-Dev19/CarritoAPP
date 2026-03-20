@@ -20,6 +20,15 @@ export const addToCart = async (productData, userId = DEFAULT_USER_ID) => {
   return response.data;
 };
 
+export const updateCartItemQuantity = async (itemId, cantidad, userId = DEFAULT_USER_ID) => {
+  const payload = {
+    cantidad,
+    idUsuario: userId,
+  };
+  const response = await api.patch(`/cart/${itemId}`, payload);
+  return response.data;
+};
+
 export const removeFromCart = async (itemId, userId = DEFAULT_USER_ID) => {
   const response = await api.delete(`/cart/${itemId}?userId=${userId}`);
   return response.data;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useProducts from '../hooks/useProducts';
 import ProductList from '../components/products/ProductList';
 import { useCart } from '../context/CartContext';
@@ -14,13 +14,39 @@ const HomePage = () => {
     handlePageChange,
   } = useProducts();
 
-  const { addItem } = useCart();
+  const { addItem, error: cartError, clearError } = useCart();
   const [notification, setNotification] = useState(null);
+  const notificationTimeoutRef = useRef(null);
+
+  const showNotification = (message, type = 'success') => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+    setNotification({ message, type });
+    notificationTimeoutRef.current = setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (cartError) {
+      showNotification(cartError, 'error');
+      clearError();
+    }
+  }, [cartError, clearError]);
 
   const handleAddToCart = async (product) => {
     const productData = {
       idProducto: product.id,
-      sku: `PROD-${product.id}`,
+      sku: product.sku,
       precio: product.price,
       cantidad: 1,
       imagen: product.thumbnail,
@@ -30,14 +56,7 @@ const HomePage = () => {
     
     if (success) {
       showNotification(`${product.title} agregado al carrito`);
-    } else {
-      showNotification('Error al agregar al carrito', 'error');
     }
-  };
-
-  const showNotification = (message, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
   };
 
   return (
